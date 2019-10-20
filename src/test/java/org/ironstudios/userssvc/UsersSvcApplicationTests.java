@@ -1,4 +1,4 @@
-package org.gliderstudios.userssvc;
+package org.ironstudios.userssvc;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
