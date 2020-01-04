@@ -1,6 +1,7 @@
 package org.ironstudios.userssvc.service;
 
 import org.ironstudios.userssvc.model.User;
+import org.ironstudios.userssvc.model.UserResponse;
 import org.ironstudios.userssvc.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,51 +25,58 @@ public class UsersService {
         this.encryptionService = encryptionService;
     }
 
-    public List<User> getAllUsers(){
-        return usersRepository.findAll();
+    public ResponseEntity<UserResponse> getAllUsers(){
+        List<User> users = usersRepository.findAll();
+        if(users.isEmpty())
+            return new ResponseEntity<>(new UserResponse<>(204, "no users exist"),HttpStatus.NO_CONTENT);
+        return new ResponseEntity<UserResponse>(new UserResponse(200, users), HttpStatus.OK);
     }
 
-    public ResponseEntity<String> addUser(User user){
+    public ResponseEntity<UserResponse> addUser(User user){
         Optional<User> existingUserOptional = usersRepository.findById(user.getUserName());
         if(existingUserOptional.isEmpty()){
             String hash = null;
             try {
                 hash = encryptionService.getPasswordHash(user.getPassword());
-            } catch (GeneralSecurityException e) {
+            } catch (Exception e) {
                 LOG.error(e.getMessage());
-                new ResponseEntity<>("internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<UserResponse>(new UserResponse(500, "internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
             user.setPassword(hash);
             usersRepository.save(user);
-            return new ResponseEntity<>("user created successfully", HttpStatus.OK);
+            return new ResponseEntity<UserResponse>(new UserResponse(200, "user created successfully"), HttpStatus.OK);
         }
         else{
-            return new ResponseEntity<>("user already exist", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<UserResponse>(new UserResponse(400, "user already exist"), HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<String> authenticateUser(User user){
+    public ResponseEntity<UserResponse> authenticateUser(User user){
         Optional<User> existingUserOptional = usersRepository.findById(user.getUserName());
         if(existingUserOptional.isPresent()){
-            String hash = null;
-            try {
-                hash = encryptionService.getPasswordHash(user.getPassword());
-            } catch (GeneralSecurityException e) {
-                LOG.error(e.getMessage());
-                new ResponseEntity<>("internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
 
-            if(existingUserOptional.get().getPassword().equals(hash)){
-                return new ResponseEntity<>("user authenticated successfully", HttpStatus.OK);
+            if(existingUserOptional.get().getPassword().equals(encryptionService.getPasswordHash(user.getPassword()))){
+                return new ResponseEntity<UserResponse>(new UserResponse(200,"user authenticated successfully"), HttpStatus.OK);
             }else{
-                return new ResponseEntity<>("incorrect username or password. Please retry with different username or password"
+                return new ResponseEntity<UserResponse>(new UserResponse(400,"incorrect username or password.")
                         , HttpStatus.BAD_REQUEST);
             }
-
         }
         else{
-            return new ResponseEntity<>("username doesn't exist. Please retry with different username or password"
-                    , HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<UserResponse>(new UserResponse(400,"username doesn't exist"
+            ), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<UserResponse> deleteUserByUserId(String id){
+        Optional<User> existingUserOptional = usersRepository.findById(id);
+        if(existingUserOptional.isPresent()){
+            usersRepository.deleteById(id);
+            return new ResponseEntity<UserResponse>(new UserResponse(200,"user deleted successfully"), HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<UserResponse>(new UserResponse(204,"username doesn't exist."
+            ), HttpStatus.BAD_REQUEST);
         }
     }
 }

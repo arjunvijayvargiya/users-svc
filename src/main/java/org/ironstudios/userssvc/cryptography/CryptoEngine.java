@@ -1,16 +1,16 @@
 package org.ironstudios.userssvc.cryptography;
 
-import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.aead.AeadConfig;
-import com.google.crypto.tink.aead.AeadFactory;
-import com.google.crypto.tink.aead.AeadKeyTemplates;
-import com.google.crypto.tink.proto.KeyTemplate;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
 
 /**
  * @author  Arjun Vijayvargiya
@@ -20,39 +20,58 @@ import java.util.Base64;
 @Component
 public class CryptoEngine {
 
-    Aead aead;
-    String SECRET_KEY = "IRONBAR65478658562024710741074832657213583698563056";
+    private static SecretKeySpec secretKey;
+    private static byte[] key;
+    private static final String SECRET_KEY = "IRONBAR4675647563487563487564";
 
-    public CryptoEngine() throws GeneralSecurityException {
-
-        // Initialize Aead through registration
-        AeadConfig.register();
-        // Get the KeyTemplate [AES256_EAX]
-        KeyTemplate keyTemplate = AeadKeyTemplates.AES256_EAX;
-
-        // Generate KeySetHandle
-        KeysetHandle keysetHandle = KeysetHandle.generateNew(keyTemplate);
-
-        // Obtain the primitive Aead
-        aead = AeadFactory.getPrimitive(keysetHandle);
+    private static void setKey(String myKey)
+    {
+        MessageDigest sha = null;
+        try {
+            key = myKey.getBytes("UTF-8");
+            sha = MessageDigest.getInstance("SHA-1");
+            key = sha.digest(key);
+            key = Arrays.copyOf(key, 16);
+            secretKey = new SecretKeySpec(key, "AES");
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String encrypt(String plainText) throws GeneralSecurityException {
-
-        System.out.println("Before Encryption: " + plainText);
-
-        // Encrypting the plaintext
-        byte[] cipherText = aead.encrypt(plainText.getBytes(StandardCharsets.UTF_8), SECRET_KEY.getBytes());
-        String outputStr = new String(Base64.getEncoder().encode(cipherText));
-        return outputStr;
+    public static String encrypt(String strToEncrypt)
+    {
+        try
+        {
+            setKey(SECRET_KEY);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error while encrypting: " + e.toString());
+        }
+        return null;
     }
 
-    public String decrypt(String cipherText) throws GeneralSecurityException {
-
-        // Decrypting the plaintext
-        byte[] decrypted = aead.decrypt(Base64.getDecoder().decode(cipherText),SECRET_KEY.getBytes() );
-        String decryptedCipherText = new String(decrypted, StandardCharsets.UTF_8);
-        return decryptedCipherText;
+    public static String decrypt(String strToDecrypt)
+    {
+        try
+        {
+            setKey(SECRET_KEY);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error while decrypting: " + e.toString());
+        }
+        return null;
     }
-
 }
+

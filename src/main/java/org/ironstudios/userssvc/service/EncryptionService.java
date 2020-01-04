@@ -16,7 +16,7 @@ public class EncryptionService {
         this.cryptoEngine = cryptoEngine;
     }
 
-    public String getPasswordHash(String plainPassword) throws GeneralSecurityException {
+    public String getPasswordHash(String plainPassword){
         return cryptoEngine.encrypt(plainPassword);
     }
 

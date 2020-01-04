@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotBlank;
 
 @Document
-public class User {
+public class User extends MongoAuditEntity{
     @Id
     private String userName;
     @NotBlank
