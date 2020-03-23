@@ -1,5 +1,6 @@
 import React, {Component } from 'react';
-import {  Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import {  Navbar, NavbarBrand, Nav} from 'reactstrap';
+import "./AppNav.css";
 class AppNav extends Component {
     state = {
        
@@ -9,15 +10,9 @@ class AppNav extends Component {
     render() {
       
         return (<div>
-            <Navbar color="dark" dark  expand="md">
-              <NavbarBrand href="/" className="mr-auto">USERS APPLICATION</NavbarBrand>
+            <Navbar color="dark" dark >
+                <NavbarBrand href="/" className="Glacier">{this.props.title}</NavbarBrand>
                 <Nav navbar className="ml-auto" >
-                  <NavItem>
-                    <NavLink href="/">Login</NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink href="/users">Users</NavLink>
-                  </NavItem>
                 </Nav>
             </Navbar>
           </div> );

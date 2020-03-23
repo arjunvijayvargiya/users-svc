@@ -6,3 +6,11 @@
 .spacer{
     margin-top: 10em;
 }
+.horizontalSignup{
+  display: inline-block;
+  vertical-align: top;
+}
+.NewToAppLabel{
+  padding-left: 1em;
+  font-style: italic;
+}
