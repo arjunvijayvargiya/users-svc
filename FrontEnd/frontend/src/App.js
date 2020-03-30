@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
-import SignUp from "./SignUp";
+//import SignUp from "./SignUp";
 
 class App extends Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class App extends Component {
           <Route path="/" exact={true} component={Login} />
           <Route path="/login" exact={true} component={Login} />
           <Route path="/dashboard" exact={true} component={Dashboard} />
-          <Route path="/signUp" exact={true} component={SignUp} />
+          <Route path="/dashboard" exact={true} component={SignUp} />
         </Switch>
       </Router>
     );

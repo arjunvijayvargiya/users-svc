@@ -1,6 +1,5 @@
 import React, {Component } from 'react';
 import {  Navbar, NavbarBrand, Nav} from 'reactstrap';
-import "./AppNav.css";
 class AppNav extends Component {
     state = {
        
