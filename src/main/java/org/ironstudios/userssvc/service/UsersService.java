@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Validated
 public class UsersService {
     private static final Logger LOG = LoggerFactory.getLogger(UsersService.class);
     private UsersRepository usersRepository;
@@ -32,9 +35,9 @@ public class UsersService {
         return new ResponseEntity<UserResponse>(new UserResponse(200, users), HttpStatus.OK);
     }
 
-    public ResponseEntity<UserResponse> addUser(User user){
-        Optional<User> existingUserOptional = usersRepository.findById(user.getUserName());
-        if(existingUserOptional.isEmpty()){
+    public ResponseEntity<UserResponse> addUser(@Valid User user){
+
+        if(!isUserValid(user.getUserName())){
             String hash = null;
             try {
                 hash = encryptionService.getPasswordHash(user.getPassword());
@@ -51,7 +54,7 @@ public class UsersService {
         }
     }
 
-    public ResponseEntity<UserResponse> authenticateUser(User user){
+    public ResponseEntity<UserResponse> authenticateUser(@Valid User user){
         Optional<User> existingUserOptional = usersRepository.findById(user.getUserName());
         if(existingUserOptional.isPresent()){
 
@@ -78,5 +81,12 @@ public class UsersService {
             return new ResponseEntity<UserResponse>(new UserResponse(204,"username doesn't exist."
             ), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public boolean isUserValid(String username){
+        if(username!=null) {
+            return usersRepository.findById(username).isEmpty();
+        }else
+            return false;
     }
 }

@@ -16,8 +16,8 @@ class SignUp extends Component {
     this.state = {
       userName: "",
       password: "",
-      email: "",
-      phone: "",
+      emailId: "",
+      phoneNumber: "",
       redirect: false,
       errorLogin: false,
       errorReason: ""
@@ -39,11 +39,11 @@ class SignUp extends Component {
   }
 
   handleChangeEmail(event) {
-    this.setState({ email: event.target.value });
+    this.setState({ emailId: event.target.value });
   }
 
   handleChangePhone(value) {
-    this.setState({ phone:  value});
+    this.setState({ phoneNumber:  value});
   }
 
   async handleSubmit(event) {
@@ -51,8 +51,8 @@ class SignUp extends Component {
     const requestObj = {
       userName: this.state.userName,
       password: this.state.password,
-      email: this.state.email,
-      phone: this.state.phone
+      emailId: this.state.emailId,
+      phoneNumber: this.state.phoneNumber
     };
     const jsStr = JSON.stringify(requestObj);
     console.log(jsStr);
@@ -128,23 +128,23 @@ class SignUp extends Component {
               </FormGroup>
 
               <FormGroup>
-                <Label for="email">Email</Label>
+                <Label for="emailId">Email</Label>
                 <Input
-                  type="email"
-                  name="Email"
-                  id="email"
+                  type="emailId"
+                  name="emailId"
+                  id="emailId"
                   placeholder="type your email"
-                  value={this.state.email}
+                  value={this.state.emailId}
                   onChange={this.handleChangeEmail}
                   required
                 />
               </FormGroup>
 
               <FormGroup>
-                <Label for="phone">Phone</Label>
+                <Label for="phoneNumber">Phone</Label>
                 <PhoneInput
                   placeholder="Enter phone number"
-                  value={this.state.phone}
+                  value={this.state.phoneNumber}
                   onChange={this.handleChangePhone}
                 />
               </FormGroup>
