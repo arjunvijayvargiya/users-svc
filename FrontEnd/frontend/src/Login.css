@@ -6,6 +6,9 @@
 .spacer{
     margin-top: 10em;
 }
+.spacerDB{
+  margin-top: 1em;
+}
 .horizontalSignup{
   display: inline-block;
   vertical-align: top;

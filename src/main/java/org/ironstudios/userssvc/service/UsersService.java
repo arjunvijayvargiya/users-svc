@@ -37,7 +37,7 @@ public class UsersService {
 
     public ResponseEntity<UserResponse> addUser(@Valid User user){
 
-        if(!isUserValid(user.getUserName())){
+        if(isUserValid(user.getUserName())){
             String hash = null;
             try {
                 hash = encryptionService.getPasswordHash(user.getPassword());
