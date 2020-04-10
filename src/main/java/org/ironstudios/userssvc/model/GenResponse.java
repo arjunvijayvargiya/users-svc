@@ -1,6 +1,6 @@
 package org.ironstudios.userssvc.model;
 
-public class ExpenseResponse<T> {
+public class GenResponse<T> {
 
     int status;
     T reason;
@@ -21,7 +21,7 @@ public class ExpenseResponse<T> {
         this.reason = response;
     }
 
-    public ExpenseResponse(int status, T response) {
+    public GenResponse(int status, T response) {
         this.status = status;
         this.reason = response;
     }

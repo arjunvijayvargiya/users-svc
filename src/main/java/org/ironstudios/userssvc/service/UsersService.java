@@ -37,7 +37,7 @@ public class UsersService {
 
     public ResponseEntity<UserResponse> addUser(@Valid User user){
 
-        if(isUserValid(user.getUserName())){
+        if(findById(user.getUserName()).isEmpty()){
             String hash = null;
             try {
                 hash = encryptionService.getPasswordHash(user.getPassword());
@@ -83,10 +83,7 @@ public class UsersService {
         }
     }
 
-    public boolean isUserValid(String username){
-        if(username!=null) {
-            return usersRepository.findById(username).isEmpty();
-        }else
-            return false;
+    public Optional<User> findById(String username){
+        return usersRepository.findById(username);
     }
 }

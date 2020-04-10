@@ -20,7 +20,7 @@ class SignUp extends Component {
       phoneNumber: "",
       redirect: false,
       errorLogin: false,
-      errorReason: ""
+      errorReason: "",
     };
 
     this.handleChangeUsername = this.handleChangeUsername.bind(this);
@@ -43,7 +43,7 @@ class SignUp extends Component {
   }
 
   handleChangePhone(value) {
-    this.setState({ phoneNumber:  value});
+    this.setState({ phoneNumber: value });
   }
 
   async handleSubmit(event) {
@@ -52,7 +52,7 @@ class SignUp extends Component {
       userName: this.state.userName,
       password: this.state.password,
       emailId: this.state.emailId,
-      phoneNumber: this.state.phoneNumber
+      phoneNumber: this.state.phoneNumber,
     };
     const jsStr = JSON.stringify(requestObj);
     console.log(jsStr);
@@ -85,7 +85,7 @@ class SignUp extends Component {
       return (
         <Redirect
           to={{
-            pathname: "/login"
+            pathname: "/login",
           }}
         />
       );

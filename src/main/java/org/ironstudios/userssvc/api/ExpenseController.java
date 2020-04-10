@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.ironstudios.userssvc.model.Expense;
-import org.ironstudios.userssvc.model.ExpenseResponse;
+import org.ironstudios.userssvc.model.GenResponse;
 import org.ironstudios.userssvc.service.ExpenseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ public class ExpenseController {
             @ApiResponse( code = 400, message =  "Bad request"),
             @ApiResponse(code = 500, message = "internal server error")
     })
-    public ResponseEntity<ExpenseResponse> addExpense(@RequestBody Expense expense) {
+    public ResponseEntity<GenResponse> addExpense(@RequestBody Expense expense) {
         return expenseService.addExpense(expense);
     }
 
@@ -37,7 +37,7 @@ public class ExpenseController {
             @ApiResponse(code = 200, message = "expense fetched successfully"),
             @ApiResponse(code = 500, message = "internal server error")
     })
-    public ResponseEntity<ExpenseResponse> getExpenseByUser(@PathVariable("username") String username) {
+    public ResponseEntity<GenResponse> getExpenseByUser(@PathVariable("username") String username) {
         return expenseService.getExpenseByUsername(username);
     }
 }

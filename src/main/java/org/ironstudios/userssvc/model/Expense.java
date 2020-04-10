@@ -1,14 +1,19 @@
 package org.ironstudios.userssvc.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Document
 public class Expense extends MongoAuditEntity {
 
     @Id
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String expenseId;
     @NotBlank
     private String userName;
@@ -54,5 +59,18 @@ public class Expense extends MongoAuditEntity {
 
     public void setType(ExpenseType type) {
         this.type = type;
+    }
+
+    public static List<List<String>> from(List<Expense> expenseList){
+
+        List<List<String>> expensesList = expenseList.stream().map(expense -> {
+            List<String> stringList = new ArrayList<>();
+            stringList.add(expense.name);
+            stringList.add(expense.amount);
+            stringList.add(expense.type.name());
+            return stringList;
+        }).collect(Collectors.toList());
+
+        return expensesList;
     }
 }
